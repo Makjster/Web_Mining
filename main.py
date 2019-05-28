@@ -102,7 +102,9 @@ def fit_first_order_mc(sequences):
         b[word_pair] += 1
 
     c = np.array([[b[(i, j)] for j in states] for i in states], dtype=float)
-    return c
+    row_sums = c.sum(axis=1)
+    new_matrix = c / row_sums[:, np.newaxis]
+    return new_matrix
 
 print(fit_first_order_mc(["G","G","G","B","B","G","B","G","G","G","G"]))
 
