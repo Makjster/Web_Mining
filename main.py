@@ -99,9 +99,7 @@ def fit_first_order_mc(sequences):
 
     states = Counter(sequences).keys()
     liste = []
-    print(states)
     a = zip(sequences[:-1], sequences[1:])
-    print(list(a))
     c = list(a)
 
     b = Counter(a)
@@ -109,11 +107,13 @@ def fit_first_order_mc(sequences):
     c = np.array([[b[(i, j)] for j in states] for i in states], dtype=float)
     row_sums = c.sum(axis=1)
     new_matrix = c / row_sums[:, np.newaxis]
-    return new_matrix
+    print(np.around(new_matrix,2))
+   
     """
-    Output
-    [[0.71428571 0.28571429]
-    [0.66666667 0.33333333]]
+    Output 
+    [[0.71 0.29]
+    [0.67 0.33]]
+    None
     """
 
 print(fit_first_order_mc(["G","G","G","B","B","G","B","G","G","G","G"]))
