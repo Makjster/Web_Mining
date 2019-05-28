@@ -31,10 +31,14 @@ def levenshtein(seq1, seq2):
     print(matrix.astype(int))
     return(int(matrix[size_1 - 1, size_2 - 1]))
 
-
-
-#print(levenshtein(["Data", "Mining"], ["Web", "Mining"]))
-
+print(levenshtein(["Data", "Mining"], ["Web", "Mining"]))
+"""
+Output
+    [[0 1 2]
+    [1 1 2]
+    [2 2 1]]
+    1
+"""
 def distance_matrix(sequences):
 
     x = len(sequences)
@@ -44,7 +48,10 @@ def distance_matrix(sequences):
     print(np.array([matrix[i:i + x] for i in range(0, len(matrix), x)]))
 
 
-#distance_matrix([["Data", "Mining"], ["Web", "Mining"], ["DSAL", "Test"]])
+distance_matrix([["Data", "Mining"], ["Web", "Mining"], ["DSAL", "Test"]])
+""" 
+Output is the correct matrix but with all previous matrices as well. That needs to be changed to just the result matrix
+"""
 
 def sequence_dbscan(sequences, eps, min_samples):
     C=0
