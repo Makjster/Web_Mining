@@ -118,4 +118,28 @@ def fit_first_order_mc(sequences):
 
 print(fit_first_order_mc(["G","G","G","B","B","G","B","G","G","G","G"]))
 
-#print(fit_first_order_mc(["T","i","e","r","e"]))
+def fit_second_order_mc(sequences):
+
+    x =[v + sequences[i + 1] for i, v in enumerate(sequences[:-1])]
+
+    states = Counter(x).keys()
+
+    a = Counter(zip(x[:-1], x[1:]))
+    b = Counter(a)
+
+    c = np.array([[b[(i, j)] for j in states] for i in states], dtype=float)
+    row_sums = c.sum(axis=1)
+    new_matrix = c / row_sums[:, np.newaxis]
+
+    print(np.around(new_matrix, 2))
+
+print(fit_second_order_mc(["G", "G", "G", "B", "B", "G", "B", "G", "G", "G", "G"]))
+
+"""
+Output
+[[0.75 0.25 0.   0.  ]
+ [0.   0.   0.5  0.5 ]
+ [0.   0.   0.   1.  ]
+ [0.5  0.5  0.   0.  ]]
+None
+"""
