@@ -5,6 +5,8 @@ from itertools import islice
 import pandas as pd
 from numpy import dtype
 
+# 1a
+
 def levenshtein(seq1, seq2):
     size_1 = len(seq1) + 1
     size_2 = len(seq2) + 1
@@ -39,6 +41,9 @@ Output
     [2 2 1]]
     1
 """
+
+#1b
+
 def distance_matrix(sequences):
 
     x = len(sequences)
@@ -52,6 +57,8 @@ distance_matrix([["Data", "Mining"], ["Web", "Mining"], ["DSAL", "Test"]])
 """ 
 Output is the correct matrix but with all previous matrices as well. That needs to be changed to just the result matrix
 """
+
+#1c
 
 def sequence_dbscan(sequences, eps, min_samples):
     C=0
@@ -93,6 +100,7 @@ def regionQuerry(sequences, x, eps):
             neighbours.append(i)
     return neighbours
 
+#2a
 
 def fit_first_order_mc(sequences):
     sequences.insert(0,"R")
