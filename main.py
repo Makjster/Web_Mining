@@ -127,22 +127,33 @@ None
 
 def fit_second_order_mc(sequences):
 
+   np.seterr(divide='ignore', invalid='ignore')
+
     sequences.insert(len(sequences), "R")
     sequences.insert(0, "R")
     x =[v + sequences[i + 1] for i, v in enumerate(sequences[:-1])]
     x.insert(0,"RR")
-    print(x)
     states = Counter(x).keys()
+
+    word = list(states)
+    words = [word.replace('R', 'R') for word in word]
+
+    row_names = words
+    col_names = words
 
     a = Counter(zip(x[:-1], x[1:]))
     b = Counter(a)
 
     c = np.array([[b[(i, j)] for j in states] for i in states], dtype=float)
     row_sums = c.sum(axis=1)
-    new_matrix = c / row_sums[:, np.newaxis]
+    t_m = c / row_sums[:, np.newaxis]
+    t_m[np.isnan(t_m)] = 0
 
-    print(np.around(new_matrix, 2))
-
+    print("Col names ", col_names)
+    print("Row names ", row_names)
+    return np.around(t_m, 2)
+    return col_names
+    return row_names
 
 print(fit_second_order_mc(["G", "G", "G", "B", "B", "G", "B", "G", "G", "G", "G"]))
 
@@ -154,7 +165,6 @@ Output
  [0.  0.  0.  0.  0.5 0.5 0. ]
  [0.  0.  0.  0.  0.  1.  0. ]
  [0.  0.  0.5 0.5 0.  0.  0. ]
- [nan nan nan nan nan nan nan]]
-None
-C:\Users\matti\Anaconda3\lib\site-packages\ipykernel_launcher.py:39: RuntimeWarning: invalid value encountered in true_divide
+ [0.  0.  0.  0.  0.  0.  0. ]]
+
 """
