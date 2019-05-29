@@ -95,33 +95,35 @@ def regionQuerry(sequences, x, eps):
 
 
 def fit_first_order_mc(sequences):
-
-
+    sequences.insert(0,"R")
+    sequences.insert(len(sequences), "R")
     states = Counter(sequences).keys()
     liste = []
-    a = zip(sequences[:-1], sequences[1:])
-    c = list(a)
-
+    a = Counter(zip(sequences[:-1], sequences[1:]))
     b = Counter(a)
-    
+
     c = np.array([[b[(i, j)] for j in states] for i in states], dtype=float)
     row_sums = c.sum(axis=1)
     new_matrix = c / row_sums[:, np.newaxis]
-    print(np.around(new_matrix,2))
-   
-    """
-    Output 
-    [[0.71 0.29]
-    [0.67 0.33]]
-    None
-    """
+
+    print(np.around(new_matrix,3))
 
 print(fit_first_order_mc(["G","G","G","B","B","G","B","G","G","G","G"]))
+"""
+Output
+[[0.    1.    0.   ]
+ [0.125 0.625 0.25 ]
+ [0.    0.667 0.333]]
+None
+"""
 
 def fit_second_order_mc(sequences):
 
+    sequences.insert(len(sequences), "R")
+    sequences.insert(0, "R")
     x =[v + sequences[i + 1] for i, v in enumerate(sequences[:-1])]
-
+    x.insert(0,"RR")
+    print(x)
     states = Counter(x).keys()
 
     a = Counter(zip(x[:-1], x[1:]))
@@ -133,13 +135,18 @@ def fit_second_order_mc(sequences):
 
     print(np.around(new_matrix, 2))
 
+
 print(fit_second_order_mc(["G", "G", "G", "B", "B", "G", "B", "G", "G", "G", "G"]))
 
 """
 Output
-[[0.75 0.25 0.   0.  ]
- [0.   0.   0.5  0.5 ]
- [0.   0.   0.   1.  ]
- [0.5  0.5  0.   0.  ]]
+[[0.  1.  0.  0.  0.  0.  0. ]
+ [0.  0.  1.  0.  0.  0.  0. ]
+ [0.  0.  0.6 0.2 0.  0.  0.2]
+ [0.  0.  0.  0.  0.5 0.5 0. ]
+ [0.  0.  0.  0.  0.  1.  0. ]
+ [0.  0.  0.5 0.5 0.  0.  0. ]
+ [nan nan nan nan nan nan nan]]
 None
+C:\Users\matti\Anaconda3\lib\site-packages\ipykernel_launcher.py:39: RuntimeWarning: invalid value encountered in true_divide
 """
