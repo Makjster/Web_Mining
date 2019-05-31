@@ -126,45 +126,67 @@ None
 """
 
 def fit_second_order_mc(sequences):
-
-   np.seterr(divide='ignore', invalid='ignore')
+    np.seterr(divide='ignore', invalid='ignore')
 
     sequences.insert(len(sequences), "R")
     sequences.insert(0, "R")
     x =[v + sequences[i + 1] for i, v in enumerate(sequences[:-1])]
     x.insert(0,"RR")
+    print(x)
     states = Counter(x).keys()
+    print(Counter(x))
+    
 
-    word = list(states)
-    words = [word.replace('R', 'R') for word in word]
-
-    row_names = words
-    col_names = words
+    word = set(states)
+    print("old: ", word)
+    word.update(["R" + "R"] + ["R" + str(x) for x in set(sequences)] + [str(x) + "R" for x in set(sequences)])
+    print("new: ", word)
+    word = list(word)
+    print("word: ", word)
+    
+    row_names = word
+    col_names = word
 
     a = Counter(zip(x[:-1], x[1:]))
     b = Counter(a)
 
-    c = np.array([[b[(i, j)] for j in states] for i in states], dtype=float)
+    c = np.array([[b[(i, j)] for j in word] for i in word], dtype=float)
     row_sums = c.sum(axis=1)
     t_m = c / row_sums[:, np.newaxis]
     t_m[np.isnan(t_m)] = 0
 
-    print("Col names ", col_names)
-    print("Row names ", row_names)
-    return np.around(t_m, 2)
-    return col_names
-    return row_names
+    return (np.around(t_m, 2), row_names, col_names)
 
 print(fit_second_order_mc(["G", "G", "G", "B", "B", "G", "B", "G", "G", "G", "G"]))
 
-"""
-Output
-[[0.  1.  0.  0.  0.  0.  0. ]
- [0.  0.  1.  0.  0.  0.  0. ]
- [0.  0.  0.6 0.2 0.  0.  0.2]
- [0.  0.  0.  0.  0.5 0.5 0. ]
- [0.  0.  0.  0.  0.  1.  0. ]
- [0.  0.  0.5 0.5 0.  0.  0. ]
- [0.  0.  0.  0.  0.  0.  0. ]]
+#2b
 
-"""
+def AIC_BIC(sequences, t_m, row_names, col_names):
+#     print(len(row_names))
+        
+    a = Counter(zip(sequences[:-1], sequences[1:]))
+    b = dict(a)
+    print(a)
+    print(b)
+    n = len(row_names) * len(col_names)
+    
+    L = 1
+    for i in range(len(row_names)):
+        for j in range(len(col_names)):
+           
+            L *= t_m[i][j] ** b.get((row_names[i], col_names[j]), 0)
+    
+    k = len(row_names) + len(col_names)
+    
+    AIC = 2 * k - 2 * np.log(L)
+    BIC = np.log(n) * k - 2 * np.log(L)
+    
+    print(BIC)
+    
+    return AIC
+    return BIC
+
+sequences=["G", "G", "G", "B", "B", "G", "B", "G", "G", "G", "G"]
+t_m, row_names, col_names = fit_second_order_mc(sequences)
+
+print(AIC_BIC(sequences, t_m, row_names, col_names))
